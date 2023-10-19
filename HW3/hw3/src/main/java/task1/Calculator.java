@@ -8,20 +8,20 @@ public class Calculator {
     над которыми должна быть произведена операция.
      */
 
-    public <T extends Number, U extends Number> T sum(T a, U b) {
-        return (T) Double.valueOf(a.doubleValue() + b.doubleValue());
+    public <T extends Number, U extends Number> Double sum(T a, U b) {
+        return a.doubleValue() + b.doubleValue();
     }
 
-    public <T extends Number, U extends Number> T multiply(T a, U b) {
-        return (T) Double.valueOf(a.doubleValue() * b.doubleValue());
+    public <T extends Number, U extends Number> Double multiply(T a, U b) {
+        return a.doubleValue() * b.doubleValue();
     }
 
-    public <T extends Number, U extends Number> T divide(T a, U b) {
-        return (T) Double.valueOf(a.doubleValue() / b.doubleValue());
+    public <T extends Number, U extends Number> Double divide(T a, U b) {
+        return a.doubleValue() / b.doubleValue();
     }
 
-    public <T extends Number, U extends Number> T subtract(T a, U b) {
-        return (T) Double.valueOf(a.doubleValue() - b.doubleValue());
+    public <T extends Number, U extends Number> Double subtract(T a, U b) {
+        return a.doubleValue() - b.doubleValue();
     }
 }
 
