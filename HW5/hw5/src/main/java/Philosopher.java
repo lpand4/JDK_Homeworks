@@ -2,7 +2,8 @@ import java.util.Random;
 
 public class Philosopher extends Thread{
 
-    private Object leftFork,  rightFork;
+
+    private AdjacentForks leftFork,  rightFork;
     private boolean hungry;
     private String name;
     private Random rnd;
@@ -10,7 +11,7 @@ public class Philosopher extends Thread{
 
 
 
-    public Philosopher(Object leftFork, Object rightFork, String name) {
+    public Philosopher(AdjacentForks leftFork, AdjacentForks rightFork, String name) {
         this.leftFork = leftFork;
         this.rightFork = rightFork;
         this.name = name;
@@ -31,24 +32,41 @@ public class Philosopher extends Thread{
         try {
             while (!isHungry()){
                 think();
-                synchronized (leftFork){
+                if (canTakeForks()){
                     takeLeftFork();
-                    synchronized (rightFork){
-                        takeRightFork();
-                        eat();
-                    }
+                    takeRightFork();
+                    eat();
                     finishEat();
+                    countOfMeals--;
+                    if (countOfMeals == 0){
+                        setHungry(true);
+                    }
+                }else {
+                    sleep(rnd.nextInt(2, 5) * 100L);
                 }
-                countOfMeals--;
-                if (countOfMeals == 0){
-                    setHungry(true);
-                }
+
             }
             System.out.println("\u001B[31m" + name + ": is full." + "\u001B[0m");
         }catch (InterruptedException e){
             e.printStackTrace();
         }
 
+    }
+
+    private boolean canTakeForks(){
+        synchronized (AdjacentForks.class){
+            if (!leftFork.isUsing() && !rightFork.isUsing()){
+                changeForkUsing();
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+
+    private synchronized void changeForkUsing() {
+        leftFork.setUsing(!leftFork.isUsing());
+        rightFork.setUsing(!rightFork.isUsing());
     }
 
     private void eat() throws InterruptedException {
@@ -70,6 +88,7 @@ public class Philosopher extends Thread{
     }
     private void finishEat() throws InterruptedException{
         System.out.println("\u001B[37m" + name + ": Finished eating and put both forks down. " + "\u001B[0m");
+        changeForkUsing();
         sleep(rnd.nextInt(2, 5) * 100L);
     }
 }
